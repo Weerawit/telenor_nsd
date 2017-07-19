@@ -1,0 +1,9 @@
+
+  vnf_${name}:
+    type: json
+    default:
+      id: ${id}
+      vnfd_id_in_blueprint: ${vnfd_id_in_blueprint}
+      plan_name: ${plan_name}
+      vendor: ${vendor}
+      vnfd_version: "${vnfd_version}"

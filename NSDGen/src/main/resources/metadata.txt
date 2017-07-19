@@ -1,0 +1,12 @@
+{
+  "name": "${meta_name}",
+  "version": "${meta_version}",
+  "nfv_entities_version": "1.0",
+  "description" : "${meta_description}",
+  "artifacts": [
+    {
+      "name": "${meta_main_yaml}",
+      "type": "applicationTemplate"
+    }
+  ]
+}

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+<title>NSD Generator</title>
+
+<!-- Bootstrap core CSS -->
+<link href="css/bootstrap.min.css" rel="stylesheet">
+
+<style type="text/css">
+/* .row [class*='col-'] { */
+/* 	background-color: #ffeeee; */
+/* 	background-clip: content-box; */
+/* 	min-height: 20px; */
+/* } */
+</style>
+
+</head>
+
+<body>
+	<div class="container">
+		<div class="header clearfix">
+			<h3 class="text-muted">Telenor NSD Generator</h3>
+		</div>
+
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist" id="allTabs">
+			<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#metadata" role="tab">Metadata</a></li>
+			<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#networks" role="tab">Networks</a></li>
+			<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#vnf" role="tab">VNF Parameters</a></li>
+			<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#nsd" role="tab">NSD</a></li>
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<!-- Tab metadata -->
+			<div class="tab-pane active" id="metadata" role="tabpanel">
+				<div class="card-block">
+					<form id="formMetadata">
+						<div class="form-group row">
+							<label for="meta_name" class="col-sm-4 col-form-label">Name</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" value="" id="meta_name" name="meta_name">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="meta_version" class="col-sm-4 col-form-label">Version</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" value="1.0" id="meta_version" name="meta_version">
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="meta_description" class="col-sm-4 col-form-label">Description</label>
+							<div class="col-sm-8">
+								<input class="form-control" type="text" value="" id="meta_description" name="meta_description">
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- Tab Networks -->
+			<div class="tab-pane" id="networks" role="tabpanel">
+				<div class="card-block">
+					<div class="card-title">
+						<ul class="nav nav-pills nav-fill">
+							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#network_external" role="tab">External</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#network_internal" role="tab">Internal</a></li>
+							<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#network_uuid" role="tab">Pre defined</a></li>
+						</ul>
+					</div>
+					<div class="card-text">
+						<div class="tab-content">
+							<div class="tab-pane active" id="network_external" role="tabpanel">
+								<form id="formNetworkExt">
+									<input type="hidden" name="rowIndex" /> <input type="hidden" name="nw_type" value="external" />
+									<div class="form-group row">
+										<label for="nw_ext_name" class="col-sm-4 col-form-label">name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_ext_name" name="nw_ext_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_cidr" class="col-sm-4 col-form-label">cidr</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_ext_cidr" placeholder="172.21.45.56/29" name="nw_ext_cidr">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_dhcp_true" class="col-sm-4 col-form-label">DHCP</label>
+										<div class="col-sm-8">
+											<label class="custom-control custom-radio"> <input id="nw_ext_dhcp_true" name="nw_ext_dhcp" value="true" type="radio" class="custom-control-input" checked="checked"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Enable</span>
+											</label> <label class="custom-control custom-radio"> <input id="nw_ext_dhcp_false" name="nw_ext_dhcp" value="false" type="radio" class="custom-control-input"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Disable</span>
+											</label>
+
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_gateway" class="col-sm-4 col-form-label">gateway</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_ext_gateway" name="nw_ext_gateway">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_vlan" class="col-sm-4 col-form-label">vlan</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_ext_vlan" name="nw_ext_vlan">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_phys" class="col-sm-4 col-form-label">phys_network</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="physnet0" id="nw_ext_phys" name="nw_ext_phys">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_ext_type" class="col-sm-4 col-form-label">type</label>
+										<div class="col-sm-8">
+											<label class="custom-control custom-radio"> <input id="nw_ext_type_vlan" name="nw_ext_type" value="vlan" type="radio" class="custom-control-input" checked="checked" onclick="$('#nw_ext_vlan').prop('disabled', false)"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Vlan</span>
+											</label> <label class="custom-control custom-radio"> <input id="nw_ext_type_flat" name="nw_ext_type" value="flat" type="radio" class="custom-control-input" onclick="$('#nw_ext_vlan').val('');$('#nw_ext_vlan').prop('disabled', true);"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Flat</span>
+											</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<button type="button" class="btn btn-primary btn-block" onclick="saveNetwork($('#formNetworkExt'))">Add</button>
+									</div>
+								</form>
+							</div>
+
+							<div class="tab-pane" id="network_internal" role="tabpanel">
+								<form id="formNetworkInt">
+									<input type="hidden" name="rowIndex" /> <input type="hidden" name="nw_type" value="internal" />
+									<div class="form-group row">
+										<label for="nw_int_name" class="col-sm-4 col-form-label">name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_int_name" name="nw_int_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_int_cidr" class="col-sm-4 col-form-label">cidr</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_int_cidr" placeholder="172.21.45.56/29" name="nw_int_cidr">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_int_dhcp_true" class="col-sm-4 col-form-label">DHCP</label>
+										<div class="col-sm-8">
+											<label class="custom-control custom-radio"> <input id="nw_int_dhcp_true" name="nw_int_dhcp" value="true" type="radio" class="custom-control-input" checked="checked"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Enable</span>
+											</label> <label class="custom-control custom-radio"> <input id="nw_int_dhcp_false" name="nw_int_dhcp" value="false" type="radio" class="custom-control-input"> <span class="custom-control-indicator"></span> <span class="custom-control-description">Disable</span>
+											</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<button type="button" class="btn btn-primary btn-block" onclick="saveNetwork($('#formNetworkInt'))">Add</button>
+									</div>
+								</form>
+							</div>
+
+
+							<div class="tab-pane" id="network_uuid" role="tabpanel">
+								<form id="formNetowrkP">
+									<input type="hidden" name="rowIndex" /> <input type="hidden" name="nw_type" value="predefine" />
+									<div class="form-group row">
+										<label for="nw_p_name" class="col-sm-4 col-form-label">name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_p_name" name="nw_p_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="nw_p_uuid" class="col-sm-4 col-form-label">uuid</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="nw_p_uuid" placeholder="66f4885b-2dc0-43fd-a734-745c0902a075" name="nw_p_uuid">
+										</div>
+									</div>
+									<div class="form-group row">
+										<button type="button" class="btn btn-primary btn-block" onclick="saveNetwork($('#formNetowrkP'))">Add</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="card-block">
+					<div class="card-title">
+						<form id="formNetworkTable">
+							<table id="networkTable" class="table-sm col-sm-12 table-striped">
+								<thead class="thead-inverse">
+									<tr>
+										<th>Type</th>
+										<th>Network Name</th>
+										<th>CIDR</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- Tab VNF -->
+			<div class="tab-pane" id="vnf" role="tabpanel">
+				<div class="card-block">
+					<div class="card-title">
+						<ul class="nav nav-pills nav-fill">
+							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#vnfm_huawei" role="tab">Huawei</a></li>
+							<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#vnfm_zte" role="tab">ZTE</a></li>
+							<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#vnfm_cbam" role="tab">CBAM</a></li>
+						</ul>
+					</div>
+
+					<div class="card-text">
+						<div class="tab-content">
+							<div class="tab-pane active" id="vnfm_huawei" role="tabpanel">
+								<form id="formVnfmHuawei">
+									<div class="form-group row">
+										<label for="vnfm_h_name" class="col-sm-4 col-form-label">name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_h_name" name="vnfm_h_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_h_id" class="col-sm-4 col-form-label">id</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_h_id" name="vnfm_h_id">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_h_vnfd_id_in_blueprint" class="col-sm-4 col-form-label">vnfd_id_in_blueprint</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_h_vnfd_id_in_blueprint" name="vnfm_h_vnfd_id_in_blueprint">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_h_plan_name" class="col-sm-4 col-form-label">plan_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_h_plan_name" name="vnfm_h_plan_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_h_vendor" class="col-sm-4 col-form-label">vendor</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="HAUWEI" id="vnfm_h_vendor" name="vnfm_h_vendor">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_h_vnfd_version" class="col-sm-4 col-form-label">vnfd_version</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="1.0" id="vnfm_h_vnfd_version" name="vnfm_h_vnfd_version">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label"></label>
+										<div class="col-sm-8">
+											<table class="table-sm col-sm-12 table-striped">
+												<thead class="thead-inverse">
+													<tr>
+														<th>Connection Point</th>
+														<th class="d-flex justify-content-end"><button type="button" class="btn btn-small btn-primary" onclick="addConnectionPoint($(this).closest('table'))">+</button></th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane" id="vnfm_zte" role="tabpanel">
+								<form id="formVnfmZte">
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">id</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="id">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_id_in_blueprint</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfd_id_in_blueprint">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">plan_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="plan_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vendor</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="ZTE" id="vendor">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_version</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="1.0" id="vnfd_version">
+										</div>
+									</div>
+								</form>
+							</div>
+							<div class="tab-pane" id="vnfm_cbam" role="tabpanel">
+								<form id="formVnfmCbam">
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">id</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="id">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_id_in_blueprint</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfd_id_in_blueprint">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">plan_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="plan_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vendor</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="CBAM" id="vendor">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_version</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="1.0" id="vnfd_version">
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			<!-- Tab NSD -->
+			<div class="tab-pane" id="nsd" role="tabpanel">
+				<div class="card-block">
+					<div class="card-title">
+						<ul class="nav nav-pills nav-fill">
+							<li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#neutron" role="tab">Neutron</a></li>
+							<li class="nav-item"><a class="nav-link " data-toggle="tab" href="#nuage" role="tab">Nuage</a></li>
+						</ul>
+					</div>
+					<div class="card-text">
+						<div class="tab-content">
+							<div class="tab-pane active" id="neutron" role="tabpanel">
+							Download it <a href='#' onclick='downloadNeutron()'>here</a>
+							</div>
+							<div class="tab-pane " id="nuage" role="tabpanel">
+							predefine env
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer class="footer">
+			<p>&copy; Nokia 2017</p>
+		</footer>
+
+	</div>
+	<!-- /container -->
+
+
+	<!-- Bootstrap core JavaScript
+    ================================================== -->
+	<!-- jQuery Version 1.11.1 -->
+	<script src="js/jquery-3.2.1.js"></script>
+
+	<!-- Tether JavaScript -->
+	<script src="js/tether.min.js"></script>
+
+	<!-- Bootstrap Core JavaScript -->
+	<script src="js/bootstrap.min.js"></script>
+
+	<script>
+		var network_changed = false;
+		
+		function downloadNeutron() {
+			var formObj = $('#formMetadata');
+			var metadata = $(formObj).serializeArray();
+			
+			console.log("metadata := " + JSON.stringify(metadata));
+			
+			var formObj = $('#formNetworkTable');
+			var networks = $(formObj).serializeArray();
+			
+			console.log("networks := " + JSON.stringify(networks));
+			
+			var vnf;
+			
+			if ($('div#vnfm_huawei').hasClass('active')) {
+				var formObj = $('#formVnfmHuawei');
+				vnf = $(formObj).serializeArray();
+				vnf.push({name: "vnf_type", value: "huawei"});
+				console.log("vnf := " + JSON.stringify(vnf));
+				
+				console.log('send url');
+			} else if ($('div#vnfm_zte').hasClass('active')) {
+				var formObj = $('#formVnfmZte');
+				vnf = $(formObj).serializeArray();
+				vnf.push({name: "vnf_type", value: "zte"});
+			} else {
+				var formObj = $('#formVnfmCbam');
+				vnf = $(formObj).serializeArray();
+				vnf.push({name: "vnf_type", value: "cbam"});
+			}
+			
+			$.ajax({
+				  type: "POST",
+				  contentType : 'application/json',
+				  url: '/neutron/generate',
+				  data: JSON.stringify({"metadata": JSON.stringify(metadata), "networks": JSON.stringify(networks), "vnf": JSON.stringify(vnf) }),
+				  success: function(retData) {
+					  $("body").append("<iframe src='/neutron/download' style='display: none;' ></iframe>");
+				  }
+			});
+		}
+		
+		function validateRequired(input) {
+			var valid = true;
+			input.each(function() {
+				var inputObj = $(this);
+				var formGroupObj = inputObj.parent('div');
+				formGroupObj.removeClass('has-danger');
+				inputObj.removeClass('form-control-danger');
+				inputObj.parent().find('.form-control-feedback').remove();
+				if (null == inputObj.val() || "" == inputObj.val()) {
+					formGroupObj.addClass('has-danger');
+					inputObj.addClass('form-control-danger');
+					inputObj.parent().append('<div class="form-control-feedback">This value is required</div>');
+					valid = false;
+				}
+			});
+						
+			return valid;
+		}
+		
+		function saveNetwork(formObj) {
+			var data = $(formObj).serializeArray();
+
+			var type = data.get('nw_type');
+			var nw_name = "";
+			var cidr = "";
+			if (type == 'external') {
+				nw_name = data.get('nw_ext_name');
+				cidr = data.get('nw_ext_cidr');
+				if (!validateRequired($('#nw_ext_name'))) {
+					return false;
+				}
+			} else if (type == 'internal') {
+				nw_name = data.get('nw_int_name');
+				cidr = data.get('nw_int_cidr');
+				if (!validateRequired($('#nw_int_name'))) {
+					return false;
+				}
+			} else {
+				nw_name = data.get('nw_p_name');
+				if (!validateRequired($('#nw_p_name'))) {
+					return false;
+				}
+			}
+
+			var html_tr = "<tr><td><input type='hidden' name='network_data' value='"
+					+ JSON.stringify(data)
+					+ "'>"
+					+ type
+					+ "</td><td>"
+					+ nw_name + "</td><td>" + cidr + "</td>";
+			html_tr += "<td class='d-flex justify-content-end'><button type='button' class='btn btn-small btn-danger' onclick='network_changed=true;$(this).closest(\"tr\").remove()'>Delete</button></td></tr>";
+			formObj.trigger("reset");
+			$('#networkTable').append(html_tr);
+			
+			network_changed=true;
+		}
+		
+		var connection_point_index = 0;
+
+		function addConnectionPoint(tableObj) {
+			
+			var html_select = "<div class='input-group-addon'>-></div>";
+			var connection_point_mapping_select = "<select class='form-control' name='connection_point_mapping" + connection_point_index + "'>";
+			connection_point_mapping_select += connection_point_mapping_option;
+			connection_point_mapping_select += "</select>";
+			html_select += connection_point_mapping_select;
+		  
+			var html_tr = "<tr><td><div class='input-group'><input type='text' name='connection_point_name" + connection_point_index + "' class='form-control' placeholder='name'>" + html_select + "</dev></td>";
+			html_tr += "<td class='d-flex justify-content-end'><button type='button' class='btn btn-small btn-danger' onclick='$(this).closest(\"tr\").remove()'>-</button></td></tr>";
+			tableObj.append(html_tr);
+			
+			connection_point_index++
+			return false;
+		}
+
+		function gotoVNF() {
+			$('#allTabs a[href="#vnf"]').removeClass('disabled');
+			$('#allTabs a[href="#vnf"]').tab('show');
+		}
+
+		function gotoNetwork() {
+			$('#allTabs a[href="#networks"]').removeClass('disabled');
+			$('#allTabs a[href="#networks"]').tab('show');
+		}
+		
+		var connection_point_mapping_option = "";
+
+		$(document).ready(function() {
+
+			Array.prototype.get = function(name) {
+				for (var i = 0, len = this.length; i < len; i++) {
+					if (typeof this[i] != "object")
+						continue;
+					if (this[i].name === name)
+						return this[i].value;
+				}
+			};
+		    
+		    
+			$('#allTabs a[href="#vnf"]').on('show.bs.tab', function(e) {
+				var formObj = $('#formNetworkTable');
+				var networks = $(formObj).serializeArray();
+				connection_point_mapping_option = "";
+				
+				for (i = 0; i < networks.length; i++) {
+					var network = JSON.parse(networks[i]['value']);
+					var type = network.get('nw_type');
+					if (type == 'external') {
+						nw_name = network.get('nw_ext_name');
+						cidr = network.get('nw_ext_cidr');
+					} else if (type == 'internal') {
+						nw_name = network.get('nw_int_name');
+						cidr = network.get('nw_int_cidr');
+					} else {
+						nw_name = network.get('nw_p_name');
+					}
+					connection_point_mapping_option += "<option value='" + nw_name + "'>" + nw_name + "</option>";
+				}
+				
+				if (network_changed) {
+					network_changed = false;
+					$("select[name*='connection_point_mapping']").each(function() {  // first pass, create name mapping
+				        $(this).empty();
+						$(this).append(connection_point_mapping_option);
+				    });
+				}
+			});
+			
+			
+			$('#allTabs a[href="#nsd"]').on('show.bs.tab', function(e) {
+				var valid = true;
+				
+				var formObj = $('#formMetadata');
+				var metadata = $(formObj).serializeArray();
+				if (!validateRequired($('input[name="meta_name"]'))) {
+					valid = false;
+				}
+				if (!validateRequired($('input[name="meta_version"]'))) {
+					valid = false;
+				}
+				if (!valid) {
+					$('#allTabs a[href="#metadata"]').tab('show');
+					return false;
+				}
+				
+				if ($('div#vnfm_huawei').hasClass('active')) {
+					var formObj = $('#formVnfmHuawei');
+					var vnf = $(formObj).serializeArray();
+					
+					if (!validateRequired($('input[name="vnfm_h_name"]'))) {
+						valid = false;
+					}
+					if (!validateRequired($('input[name*="connection_point_name"]'))) {
+						valid = false;
+					}
+					if (!validateRequired($('select[name*="connection_point_mapping"]'))) {
+						valid = false;
+					}
+					if (!valid) {
+						$('#allTabs a[href="#vnf"]').tab('show');
+						return false;
+					}
+					console.log(JSON.stringify(vnf));
+				};
+			});
+		});
+	</script>
+</body>
+</html>
+

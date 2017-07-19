@@ -1,0 +1,50 @@
+  
+  ${nw_name}_impl:
+    type: tosca.nodes.net.network.Flat
+    properties:
+      name: { get_input: [network_${nw_name}, [name] ] }
+      physical_network: { get_input: [network_${nw_name}, [phys] ] }
+      router_external: true
+    requirements:
+      mapped_to:
+        type: tosca.relationships.MappedTo
+        target: ${nw_name}
+
+  ${nw_name}_subnet_impl:
+    type: tosca.nodes.net.Subnet
+    properties:
+      cidr: { get_input: [network_${nw_name}, [cidr] ] }
+      gateway: { get_input: [network_${nw_name}, [gateway] ] }
+      dhcp_enabled: { get_input: [network_${nw_name}, [enable_dhcp] ] }
+      name: { concat: [ [ { get_property: [ ${nw_name}_impl, name ] }, "subnet"], "_"] }
+    interfaces:
+      tosca.interfaces.node.lifecycle.Standard:
+        create:
+          implementation: nfvo.create_network_resource_v1
+          override: true
+          inputs:
+            type: { get_attribute: [ SELF, network_resource_type ] }
+            resource_id: { get_attribute: [ SELF, tosca_id ] }
+            template_name: { get_attribute: [ SELF, tosca_name ] }
+            name: { get_attribute: [ SELF, name ] }
+            placement: { get_attribute: [ SELF, placement ] }
+            instantiation_parameters:
+              network_id: { get_attribute: [ SELF, network_id ] }
+              ip_version: { get_property: [SELF, ip_version] }
+              allocation_pools: { get_property: [SELF, allocation_pools] }
+              dns_nameservers: { get_property: [SELF, dns_nameservers] }
+              host_routes: { get_property: [SELF, host_routes] }
+              cidr:  { get_property: [SELF, cidr] }
+              enable_dhcp:  { get_property: [SELF, dhcp_enabled] }
+              gateway: { get_property: [SELF, gateway] }
+              router_id: { get_attribute: [ SELF, router_id ] }
+              is_router_gateway: { get_attribute: [ SELF, is_router_gateway ] }
+              enable_snat: { get_attribute: [ SELF, enable_snat ] }
+              subnetpool_id: {get_attribute: [ SELF, subnetpool_id ]}
+    requirements:
+      subnet_of:
+        type: tosca.relationships.net.SubnetOf
+        target: ${nw_name}_impl
+      mapped_to:
+        type: tosca.relationships.MappedTo
+        target: ${nw_name}

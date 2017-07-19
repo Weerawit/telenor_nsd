@@ -1,0 +1,3 @@
+      ${cp_name}:
+        type: tosca.relationships.nfv.VirtualLinksTo
+        target: ${nw_name}

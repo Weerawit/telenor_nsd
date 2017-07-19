@@ -1,0 +1,4 @@
+          - extCps:
+            - cpdId: ${cp_name}
+            resourceId: { get_input: [ network_${nw_name}, [ uuid ] ] }
+            name:  { get_input: [ network_${nw_name}, [ name ] ] }

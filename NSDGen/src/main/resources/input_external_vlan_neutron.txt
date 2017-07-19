@@ -1,0 +1,10 @@
+
+  network_${name}:
+    type: json
+    default:
+      name: ${name}
+      cidr: ${cidr}
+      gateway: ${gateway}
+      enable_dhcp: ${dhcp}
+      vlan: "${vlan}"
+      phys: ${phys}

@@ -1,0 +1,2 @@
+  ${nw_name}:
+    type: tosca.nodes.nfv.vl.ELAN

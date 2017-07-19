@@ -1,0 +1,7 @@
+
+  network_${name}:
+    type: json
+    default:
+      name: ${name}
+      cidr: ${cidr}
+      enable_dhcp: ${dhcp}
