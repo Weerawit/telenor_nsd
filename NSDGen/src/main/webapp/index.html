@@ -275,21 +275,27 @@
 							<div class="tab-pane" id="vnfm_zte" role="tabpanel">
 								<form id="formVnfmZte">
 									<div class="form-group row">
-										<label for="example-text-input" class="col-sm-4 col-form-label">id</label>
+										<label for="vnfm_z_name" class="col-sm-4 col-form-label">name</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="" id="id">
+											<input class="form-control" type="text" value="" id="vnfm_z_name" name="vnfm_z_name">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_id_in_blueprint</label>
+										<label for="vnfm_z_id" class="col-sm-4 col-form-label">id</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="" id="vnfd_id_in_blueprint">
+											<input class="form-control" type="text" value="" id="vnfm_z_id" name="vnfm_z_id">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="example-text-input" class="col-sm-4 col-form-label">plan_name</label>
+										<label for="vnfm_z_vimid" class="col-sm-4 col-form-label">vimid</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="" id="plan_name">
+											<input class="form-control" type="text" value="" id="vnfm_z_vimid" name="vnfm_z_vimid">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for=""vnfm_z_vnfminstid"" class="col-sm-4 col-form-label">vnfminstid</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_z_vnfminstid" name="vnfm_z_vnfminstid">
 										</div>
 									</div>
 									<div class="form-group row">
@@ -302,6 +308,21 @@
 										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_version</label>
 										<div class="col-sm-8">
 											<input class="form-control" type="text" value="1.0" id="vnfd_version">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="example-text-input" class="col-sm-4 col-form-label"></label>
+										<div class="col-sm-8">
+											<table class="table-sm col-sm-12 table-striped">
+												<thead class="thead-inverse">
+													<tr>
+														<th>Connection Point</th>
+														<th class="d-flex justify-content-end"><button type="button" class="btn btn-small btn-primary" onclick="addConnectionPoint($(this).closest('table'))">+</button></th>
+													</tr>
+												</thead>
+												<tbody>
+												</tbody>
+											</table>
 										</div>
 									</div>
 								</form>
@@ -600,116 +621,89 @@
 
 		var connection_point_mapping_option = "";
 
-		$(document)
-				.ready(
-						function() {
+		$(document).ready(function() {
 
-							Array.prototype.get = function(name) {
-								for (var i = 0, len = this.length; i < len; i++) {
-									if (typeof this[i] != "object")
-										continue;
-									if (this[i].name === name)
-										return this[i].value;
-								}
-							};
+			Array.prototype.get = function(name) {
+				for (var i = 0, len = this.length; i < len; i++) {
+					if (typeof this[i] != "object")
+						continue;
+					if (this[i].name === name)
+						return this[i].value;
+				}
+			};
 
-							$('#allTabs a[href="#vnf"]')
-									.on(
-											'show.bs.tab',
-											function(e) {
-												var formObj = $('#formNetworkTable');
-												var networks = $(formObj)
-														.serializeArray();
-												connection_point_mapping_option = "";
+			$('#allTabs a[href="#vnf"]').on('show.bs.tab', 
+				function(e) {
+					var formObj = $('#formNetworkTable');
+					var networks = $(formObj).serializeArray();
+					connection_point_mapping_option = "";
 
-												for (i = 0; i < networks.length; i++) {
-													var network = JSON
-															.parse(networks[i]['value']);
-													var type = network
-															.get('nw_type');
-													if (type == 'external') {
-														nw_name = network
-																.get('nw_ext_name');
-														cidr = network
-																.get('nw_ext_cidr');
-													} else if (type == 'internal') {
-														nw_name = network
-																.get('nw_int_name');
-														cidr = network
-																.get('nw_int_cidr');
-													} else {
-														nw_name = network
-																.get('nw_p_name');
-													}
-													connection_point_mapping_option += "<option value='" + nw_name + "'>"
-															+ nw_name
-															+ "</option>";
-												}
+					for (i = 0; i < networks.length; i++) {
+						var network = JSON.parse(networks[i]['value']);
+						var type = network.get('nw_type');
+						if (type == 'external') {
+							nw_name = network.get('nw_ext_name');
+							cidr = network.get('nw_ext_cidr');
+						} else if (type == 'internal') {
+							nw_name = network.get('nw_int_name');
+							cidr = network.get('nw_int_cidr');
+						} else {
+							nw_name = network.get('nw_p_name');
+						}
+						connection_point_mapping_option += "<option value='" + nw_name + "'>" + nw_name + "</option>";
+					}
 
-												if (network_changed) {
-													network_changed = false;
-													$(
-															"select[name*='connection_point_mapping']")
-															.each(
-																	function() { // first pass, create name mapping
-																		$(this)
-																				.empty();
-																		$(this)
-																				.append(
-																						connection_point_mapping_option);
-																	});
-												}
-											});
+											
+					if (network_changed) {
+						network_changed = false;
+						$("select[name*='connection_point_mapping']").each(
+							function() { // first pass, create name mapping
+								$(this).empty();
+								$(this).append(connection_point_mapping_option);
+							});
+					}
+				});
 
-							$('#allTabs a[href="#nsd"]')
-									.on(
-											'show.bs.tab',
-											function(e) {
-												var valid = true;
+			$('#allTabs a[href="#nsd"]').on('show.bs.tab',
+				function(e) {
+					var valid = true;
+	
+					var formObj = $('#formMetadata');
+					var metadata = $(formObj).serializeArray();
+					if (!validateRequired($('input[name="meta_name"]'))) {
+						valid = false;
+					}
+					if (!validateRequired($('input[name="meta_version"]'))) {
+						valid = false;
+					}
+					if (!valid) {
+						$('#allTabs a[href="#metadata"]').tab('show');
+						return false;
+					}
+	
+					if ($('div#vnfm_huawei').hasClass('active')) {
+						if (!validateRequired($('input[name="vnfm_h_name"]'))) {
+							valid = false;
+						}
+					} else if ($('div#vnfm_zte').hasClass('active')) {
+						if (!validateRequired($('input[name="vnfm_z_name"]'))) {
+							valid = false;
+						}
 
-												var formObj = $('#formMetadata');
-												var metadata = $(formObj)
-														.serializeArray();
-												if (!validateRequired($('input[name="meta_name"]'))) {
-													valid = false;
-												}
-												if (!validateRequired($('input[name="meta_version"]'))) {
-													valid = false;
-												}
-												if (!valid) {
-													$(
-															'#allTabs a[href="#metadata"]')
-															.tab('show');
-													return false;
-												}
-
-												if ($('div#vnfm_huawei')
-														.hasClass('active')) {
-													var formObj = $('#formVnfmHuawei');
-													var vnf = $(formObj)
-															.serializeArray();
-
-													if (!validateRequired($('input[name="vnfm_h_name"]'))) {
-														valid = false;
-													}
-													if (!validateRequired($('input[name*="connection_point_name"]'))) {
-														valid = false;
-													}
-													if (!validateRequired($('select[name*="connection_point_mapping"]'))) {
-														valid = false;
-													}
-													if (!valid) {
-														$(
-																'#allTabs a[href="#vnf"]')
-																.tab('show');
-														return false;
-													}
-													console.log(JSON
-															.stringify(vnf));
-												}
-												;
-											});
-						});
+					}
+					
+					if (!validateRequired($('input[name*="connection_point_name"]'))) {
+						valid = false;
+					}
+					if (!validateRequired($('select[name*="connection_point_mapping"]'))) {
+						valid = false;
+					}
+					if (!valid) {
+						$('#allTabs a[href="#vnf"]').tab('show');
+						return false;
+					}
+				});
+		});
 	</script>
 </body>
 </html>
