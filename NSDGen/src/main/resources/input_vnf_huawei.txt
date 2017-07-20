@@ -1,4 +1,3 @@
-
   vnf_${name}:
     type: json
     default:

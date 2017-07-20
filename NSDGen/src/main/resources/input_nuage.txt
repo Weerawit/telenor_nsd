@@ -1,0 +1,14 @@
+  enterprise_name:
+    type: string
+    default: ${enterprise_name}
+    
+  nuage:
+    type: json
+    default:
+      l2domain_template: ${l2domain_template}
+      tosca_reference_only: ${tosca_reference_only}
+      gateway: ${gateway}
+      personality: ${personality}
+      port_name: ${port_name}
+      port_type: ${port_type}
+      physical_name: ${physical_name}

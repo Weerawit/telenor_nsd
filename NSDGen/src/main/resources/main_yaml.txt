@@ -1,19 +1,19 @@
 tosca_definitions_version: tosca_simple_yaml_1_0_0_build_1
 
 inputs:
-  ${input}
+${input}
   
 ####################################################################
 # LOGICAL MODEL
 ####################################################################
 
 node_templates:
-  ${node_template}
+${node_template}
 
 ####################################################################
 # IMPLEMENTATION MODEL
 ####################################################################
-  ${implementation_model}
+${implementation_model}
 
 ####################################################################
 # PLACEMENT

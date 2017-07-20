@@ -1,5 +1,4 @@
-
-  ${nw_name}_impl:
+  ${nw_name}_net:
     type: tosca.nodes.net.network.VXLAN
     properties:
       name: { get_input: [network_${nw_name}, [name] ] }
@@ -7,14 +6,14 @@
     requirements:
       mapped_to:
         type: tosca.relationships.MappedTo
-        target: vl_1
+        target: ${nw_name}
 
-  ${nw_name}_subnet_impl:
+  ${nw_name}_subnet:
     type: tosca.nodes.net.Subnet
     properties:
       cidr: { get_input: [network_${nw_name}, [cidr] ] }
       dhcp_enabled: { get_input: [network_${nw_name}, [enable_dhcp] ] }
-      name: { concat: [ [ { get_property: [ ${nw_name}_impl, name ] }, "subnet"], "_"] }
+      name: { concat: [ [ { get_property: [ ${nw_name}_net, name ] }, "subnet"], "_"] }
     interfaces:
       tosca.interfaces.node.lifecycle.Standard:
         create:
@@ -42,7 +41,7 @@
     requirements:
       subnet_of:
         type: tosca.relationships.net.SubnetOf
-        target: ${nw_name}_impl
+        target: ${nw_name}_net
       mapped_to:
         type: tosca.relationships.MappedTo
         target: ${nw_name}

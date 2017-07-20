@@ -357,10 +357,64 @@
 					<div class="card-text">
 						<div class="tab-content">
 							<div class="tab-pane active" id="neutron" role="tabpanel">
-							Download it <a href='#' onclick='downloadNeutron()'>here</a>
+								Download it <a href='#' onclick='downloadIt("neutron")'>here</a>
 							</div>
 							<div class="tab-pane " id="nuage" role="tabpanel">
-							predefine env
+								<form id="formNuage">
+									<div class="form-group row">
+										<label for="enterprise_name" class="col-sm-4 col-form-label">enterprise_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="enterprise_name" name="enterprise_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="l2domain_template" class="col-sm-4 col-form-label">l2domain_template</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="l2domain_template" name="l2domain_template">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="tosca_reference_only" class="col-sm-4 col-form-label">tosca_reference_only</label>
+										<div class="col-sm-8">
+											<label class="custom-control custom-radio"> <input id="tosca_reference_only_true" name="tosca_reference_only" value="true" type="radio" class="custom-control-input" checked="checked"> <span class="custom-control-indicator"></span> <span class="custom-control-description">True</span>
+											</label> <label class="custom-control custom-radio"> <input id="tosca_reference_only_false" name="tosca_reference_only" value="false" type="radio" class="custom-control-input"> <span class="custom-control-indicator"></span> <span class="custom-control-description">False</span>
+											</label>
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="gateway" class="col-sm-4 col-form-label">gateway</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="gateway" name="gateway">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="personality" class="col-sm-4 col-form-label">personality</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="VRSG" id="personality" name="personality">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="port_name" class="col-sm-4 col-form-label">port_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="ens8" id="port_name" name="port_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="port_type" class="col-sm-4 col-form-label">port_type</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="ACCESS" id="port_type" name="port_type">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="physical_name" class="col-sm-4 col-form-label">physical_name</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="ens8" id="physical_name" name="physical_name">
+										</div>
+									</div>
+									<div class="form-group row">
+										<button type="button" class="btn btn-primary btn-block" onclick="downloadIt('nuage')">Download</button>
+									</div>
+								</form>
 							</div>
 						</div>
 					</div>
@@ -389,67 +443,94 @@
 
 	<script>
 		var network_changed = false;
-		
-		function downloadNeutron() {
+
+		function downloadIt(type) {
 			var formObj = $('#formMetadata');
 			var metadata = $(formObj).serializeArray();
-			
+
 			console.log("metadata := " + JSON.stringify(metadata));
-			
+
 			var formObj = $('#formNetworkTable');
 			var networks = $(formObj).serializeArray();
-			
+
 			console.log("networks := " + JSON.stringify(networks));
-			
+
 			var vnf;
-			
+
+			var nuage = undefined;
+			if ('nuage' == type) {
+				var formObj = $('#formNuage');
+				nuage = $(formObj).serializeArray();
+			}
+
 			if ($('div#vnfm_huawei').hasClass('active')) {
 				var formObj = $('#formVnfmHuawei');
 				vnf = $(formObj).serializeArray();
-				vnf.push({name: "vnf_type", value: "huawei"});
+				vnf.push({
+					name : "vnf_type",
+					value : "huawei"
+				});
 				console.log("vnf := " + JSON.stringify(vnf));
-				
-				console.log('send url');
+
 			} else if ($('div#vnfm_zte').hasClass('active')) {
 				var formObj = $('#formVnfmZte');
 				vnf = $(formObj).serializeArray();
-				vnf.push({name: "vnf_type", value: "zte"});
+				vnf.push({
+					name : "vnf_type",
+					value : "zte"
+				});
 			} else {
 				var formObj = $('#formVnfmCbam');
 				vnf = $(formObj).serializeArray();
-				vnf.push({name: "vnf_type", value: "cbam"});
+				vnf.push({
+					name : "vnf_type",
+					value : "cbam"
+				});
 			}
-			
-			$.ajax({
-				  type: "POST",
-				  contentType : 'application/json',
-				  url: '/neutron/generate',
-				  data: JSON.stringify({"metadata": JSON.stringify(metadata), "networks": JSON.stringify(networks), "vnf": JSON.stringify(vnf) }),
-				  success: function(retData) {
-					  $("body").append("<iframe src='/neutron/download' style='display: none;' ></iframe>");
-				  }
-			});
+
+			$
+					.ajax({
+						type : "POST",
+						contentType : 'application/json',
+						url : '/' + type + '/generate',
+						data : JSON.stringify({
+							"metadata" : JSON.stringify(metadata),
+							"networks" : JSON.stringify(networks),
+							"vnf" : JSON.stringify(vnf),
+							"nuage" : JSON.stringify(nuage)
+						}),
+						success : function(retData) {
+							$("body")
+									.append(
+											"<iframe src='/" + type + "/download' style='display: none;' ></iframe>");
+						}
+					});
 		}
-		
+
 		function validateRequired(input) {
 			var valid = true;
-			input.each(function() {
-				var inputObj = $(this);
-				var formGroupObj = inputObj.parent('div');
-				formGroupObj.removeClass('has-danger');
-				inputObj.removeClass('form-control-danger');
-				inputObj.parent().find('.form-control-feedback').remove();
-				if (null == inputObj.val() || "" == inputObj.val()) {
-					formGroupObj.addClass('has-danger');
-					inputObj.addClass('form-control-danger');
-					inputObj.parent().append('<div class="form-control-feedback">This value is required</div>');
-					valid = false;
-				}
-			});
-						
+			input
+					.each(function() {
+						var inputObj = $(this);
+						var formGroupObj = inputObj.parent('div');
+						formGroupObj.removeClass('has-danger');
+						inputObj.removeClass('form-control-danger');
+						inputObj.parent().find('.form-control-feedback')
+								.remove();
+						if (null == inputObj.val() || "" == inputObj.val()) {
+							formGroupObj.addClass('has-danger');
+							inputObj.addClass('form-control-danger');
+							inputObj
+									.parent()
+									.append(
+											'<div class="form-control-feedback">This value is required</div>');
+							valid = false;
+						}
+					});
+
 			return valid;
 		}
-		
+
 		function saveNetwork(formObj) {
 			var data = $(formObj).serializeArray();
 
@@ -484,24 +565,25 @@
 			html_tr += "<td class='d-flex justify-content-end'><button type='button' class='btn btn-small btn-danger' onclick='network_changed=true;$(this).closest(\"tr\").remove()'>Delete</button></td></tr>";
 			formObj.trigger("reset");
 			$('#networkTable').append(html_tr);
-			
-			network_changed=true;
+
+			network_changed = true;
 		}
-		
+
 		var connection_point_index = 0;
 
 		function addConnectionPoint(tableObj) {
-			
+
 			var html_select = "<div class='input-group-addon'>-></div>";
 			var connection_point_mapping_select = "<select class='form-control' name='connection_point_mapping" + connection_point_index + "'>";
 			connection_point_mapping_select += connection_point_mapping_option;
 			connection_point_mapping_select += "</select>";
 			html_select += connection_point_mapping_select;
-		  
-			var html_tr = "<tr><td><div class='input-group'><input type='text' name='connection_point_name" + connection_point_index + "' class='form-control' placeholder='name'>" + html_select + "</dev></td>";
+
+			var html_tr = "<tr><td><div class='input-group'><input type='text' name='connection_point_name" + connection_point_index + "' class='form-control' placeholder='name'>"
+					+ html_select + "</dev></td>";
 			html_tr += "<td class='d-flex justify-content-end'><button type='button' class='btn btn-small btn-danger' onclick='$(this).closest(\"tr\").remove()'>-</button></td></tr>";
 			tableObj.append(html_tr);
-			
+
 			connection_point_index++
 			return false;
 		}
@@ -515,88 +597,119 @@
 			$('#allTabs a[href="#networks"]').removeClass('disabled');
 			$('#allTabs a[href="#networks"]').tab('show');
 		}
-		
+
 		var connection_point_mapping_option = "";
 
-		$(document).ready(function() {
+		$(document)
+				.ready(
+						function() {
 
-			Array.prototype.get = function(name) {
-				for (var i = 0, len = this.length; i < len; i++) {
-					if (typeof this[i] != "object")
-						continue;
-					if (this[i].name === name)
-						return this[i].value;
-				}
-			};
-		    
-		    
-			$('#allTabs a[href="#vnf"]').on('show.bs.tab', function(e) {
-				var formObj = $('#formNetworkTable');
-				var networks = $(formObj).serializeArray();
-				connection_point_mapping_option = "";
-				
-				for (i = 0; i < networks.length; i++) {
-					var network = JSON.parse(networks[i]['value']);
-					var type = network.get('nw_type');
-					if (type == 'external') {
-						nw_name = network.get('nw_ext_name');
-						cidr = network.get('nw_ext_cidr');
-					} else if (type == 'internal') {
-						nw_name = network.get('nw_int_name');
-						cidr = network.get('nw_int_cidr');
-					} else {
-						nw_name = network.get('nw_p_name');
-					}
-					connection_point_mapping_option += "<option value='" + nw_name + "'>" + nw_name + "</option>";
-				}
-				
-				if (network_changed) {
-					network_changed = false;
-					$("select[name*='connection_point_mapping']").each(function() {  // first pass, create name mapping
-				        $(this).empty();
-						$(this).append(connection_point_mapping_option);
-				    });
-				}
-			});
-			
-			
-			$('#allTabs a[href="#nsd"]').on('show.bs.tab', function(e) {
-				var valid = true;
-				
-				var formObj = $('#formMetadata');
-				var metadata = $(formObj).serializeArray();
-				if (!validateRequired($('input[name="meta_name"]'))) {
-					valid = false;
-				}
-				if (!validateRequired($('input[name="meta_version"]'))) {
-					valid = false;
-				}
-				if (!valid) {
-					$('#allTabs a[href="#metadata"]').tab('show');
-					return false;
-				}
-				
-				if ($('div#vnfm_huawei').hasClass('active')) {
-					var formObj = $('#formVnfmHuawei');
-					var vnf = $(formObj).serializeArray();
-					
-					if (!validateRequired($('input[name="vnfm_h_name"]'))) {
-						valid = false;
-					}
-					if (!validateRequired($('input[name*="connection_point_name"]'))) {
-						valid = false;
-					}
-					if (!validateRequired($('select[name*="connection_point_mapping"]'))) {
-						valid = false;
-					}
-					if (!valid) {
-						$('#allTabs a[href="#vnf"]').tab('show');
-						return false;
-					}
-					console.log(JSON.stringify(vnf));
-				};
-			});
-		});
+							Array.prototype.get = function(name) {
+								for (var i = 0, len = this.length; i < len; i++) {
+									if (typeof this[i] != "object")
+										continue;
+									if (this[i].name === name)
+										return this[i].value;
+								}
+							};
+
+							$('#allTabs a[href="#vnf"]')
+									.on(
+											'show.bs.tab',
+											function(e) {
+												var formObj = $('#formNetworkTable');
+												var networks = $(formObj)
+														.serializeArray();
+												connection_point_mapping_option = "";
+
+												for (i = 0; i < networks.length; i++) {
+													var network = JSON
+															.parse(networks[i]['value']);
+													var type = network
+															.get('nw_type');
+													if (type == 'external') {
+														nw_name = network
+																.get('nw_ext_name');
+														cidr = network
+																.get('nw_ext_cidr');
+													} else if (type == 'internal') {
+														nw_name = network
+																.get('nw_int_name');
+														cidr = network
+																.get('nw_int_cidr');
+													} else {
+														nw_name = network
+																.get('nw_p_name');
+													}
+													connection_point_mapping_option += "<option value='" + nw_name + "'>"
+															+ nw_name
+															+ "</option>";
+												}
+
+												if (network_changed) {
+													network_changed = false;
+													$(
+															"select[name*='connection_point_mapping']")
+															.each(
+																	function() { // first pass, create name mapping
+																		$(this)
+																				.empty();
+																		$(this)
+																				.append(
+																						connection_point_mapping_option);
+																	});
+												}
+											});
+
+							$('#allTabs a[href="#nsd"]')
+									.on(
+											'show.bs.tab',
+											function(e) {
+												var valid = true;
+
+												var formObj = $('#formMetadata');
+												var metadata = $(formObj)
+														.serializeArray();
+												if (!validateRequired($('input[name="meta_name"]'))) {
+													valid = false;
+												}
+												if (!validateRequired($('input[name="meta_version"]'))) {
+													valid = false;
+												}
+												if (!valid) {
+													$(
+															'#allTabs a[href="#metadata"]')
+															.tab('show');
+													return false;
+												}
+
+												if ($('div#vnfm_huawei')
+														.hasClass('active')) {
+													var formObj = $('#formVnfmHuawei');
+													var vnf = $(formObj)
+															.serializeArray();
+
+													if (!validateRequired($('input[name="vnfm_h_name"]'))) {
+														valid = false;
+													}
+													if (!validateRequired($('input[name*="connection_point_name"]'))) {
+														valid = false;
+													}
+													if (!validateRequired($('select[name*="connection_point_mapping"]'))) {
+														valid = false;
+													}
+													if (!valid) {
+														$(
+																'#allTabs a[href="#vnf"]')
+																.tab('show');
+														return false;
+													}
+													console.log(JSON
+															.stringify(vnf));
+												}
+												;
+											});
+						});
 	</script>
 </body>
 </html>

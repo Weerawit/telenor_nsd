@@ -1,6 +1,6 @@
-
   network_${name}:
     type: json
     default:
-      uuid: ${uuid}
       name: ${name}
+      cidr: ${cidr}
+      enable_dhcp: ${dhcp}

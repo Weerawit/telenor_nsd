@@ -1,4 +1,3 @@
-
   ${name}_vnf:
     type: tosca.nodes.nfv.VNF
     properties:

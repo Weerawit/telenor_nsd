@@ -1,0 +1,41 @@
+  ${nuage_placement}:
+    type: nokia.nuage.interop.VnfPlacementDetails
+
+  enterprise:
+    type: nokia.nuage.nodes.Enterprise
+    properties:
+      name: { get_input: enterprise_name }
+      tosca_reference_only: true
+
+  gateway:
+    type: nokia.nuage.nodes.Gateway
+    properties:
+      name: { get_input : [nuage, [gateway] ] }
+      personality: { get_input : [nuage, [personality] ] }
+      tosca_reference_only: true
+    requirements:
+      in_Enterprise:
+        target: enterprise
+        type: nokia.nuage.relationships.DefinedInEnterprise
+
+  port:
+    type: nokia.nuage.nodes.Port
+    properties:
+      name: { get_input : [nuage, [port_name] ] }
+      portType: { get_input : [nuage, [port_type] ] }
+      physicalName: { get_input : [nuage, [physical_name] ] }
+      tosca_reference_only: true
+    requirements:
+      in_Gateway:
+        target: gateway
+        type: nokia.nuage.relationships.DefinedInGateway
+
+  l2domain_template:
+    type: nokia.nuage.nodes.L2DomainTemplate
+    properties:
+      name: { get_input : [nuage, [l2domain_template] ] }
+      tosca_reference_only: { get_input : [nuage, [tosca_reference_only] ] }
+    requirements:
+      in_Enterprise:
+        type: nokia.nuage.relationships.DefinedInEnterprise
+        target: enterprise

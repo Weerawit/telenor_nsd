@@ -1,0 +1,104 @@
+  ${nw_name}_vlan:
+    type: nokia.nuage.nodes.VLAN
+    properties:
+      value: { get_input: [network_${nw_name}, [vlan] ] }
+    requirements:
+      in_Port:
+        type: nokia.nuage.relationships.DefinedInPort
+        target: port
+
+  ${nw_name}_l2domain:
+    type: nokia.nuage.nodes.L2Domain
+    properties:
+      name: { get_input: [network_${nw_name}, [name] ] }
+      templateID: { get_attribute: [ l2domain_template , ID ]}
+    requirements:
+      in_Enterprise:
+        type: nokia.nuage.relationships.DefinedInEnterprise
+        target: enterprise
+      wait_for_template:
+        type: tosca.relationships.DependsOn
+        target: l2domain_template
+
+  ${nw_name}_ingress_acl_allowall:
+    type: nokia.nuage.nodes.IngressACLTemplate
+    properties:
+      name: AllowAll
+      defaultAllowIP: true
+      defaultAllowNonIP: true
+      allowAddressSpoof: true
+      active: true
+    requirements:
+      in_l2domain:
+        type: nokia.nuage.relationships.DefinedInL2Domain
+        target: ${nw_name}_l2domain
+      wait_for_l2domain:
+        type: tosca.relationships.DependsOn
+        target: ${nw_name}_l2domain       
+
+  ${nw_name}_egress_acl_allowall:
+    type: nokia.nuage.nodes.EgressACLTemplate
+    properties:
+      name: AllowAll
+      defaultAllowIP: true
+      defaultAllowNonIP: true
+      active: true
+      defaultInstallACLImplicitRules: true
+    requirements:
+      in_l2domain:
+        type: nokia.nuage.relationships.DefinedInL2Domain
+        target: ${nw_name}_l2domain
+      wait_for_l2domain:
+        type: tosca.relationships.DependsOn
+        target: ${nw_name}_l2domain
+
+  ${nw_name}_bridge:
+    type: nokia.nuage.nodes.VPort
+    properties:
+      name: bridge_vport
+      addressSpoofing: ENABLED
+      type: BRIDGE
+      VLANID: { get_attribute: [ ${nw_name}_vlan, ID ] }
+    requirements:
+      in_L2Domain:
+        type: nokia.nuage.relationships.DefinedInL2Domain
+        target: ${nw_name}_l2domain
+      wait_for_vlan:
+        type: tosca.relationships.DependsOn
+        target: ${nw_name}_vlan
+
+  ${nw_name}_br_interface:
+    type: nokia.nuage.nodes.BridgeInterface
+    properties:
+      name: bridge_vport
+    requirements:
+      in_Bridge:
+        type: nokia.nuage.relationships.DefinedInVPort
+        target: ${nw_name}_bridge
+      wait_for_bridge:
+        type: tosca.relationships.DependsOn
+        target: ${nw_name}_bridge
+
+  ${nw_name}_net:
+    type: nokia.nuage.openstack.network
+    properties:
+      name: { get_input: [network_${nw_name}, [name] ] }
+    requirements:
+      mapped_to:
+        type: tosca.relationships.MappedTo
+        target: ${nw_name}
+
+  ${nw_name}_subnet:
+    type: nokia.nuage.openstack.VsdManagedSubnet
+    properties:
+      cidr: { get_input: [ network_${nw_name}, [cidr] ] }
+      name: { concat: [ [ { get_property: [ ${nw_name}_net, name ] }, "subnet"], "_"] }
+      net_partition: { get_input: enterprise_name }
+      enable_dhcp: { get_input: [ network_${nw_name}, [enable_dhcp] ] }
+    requirements:
+      subnet_of:
+        type: nokia.nuage.relationships.neutron.DefinedOnNetwork
+        target: ${nw_name}_net
+      delegate_of:
+        type: nokia.nuage.relationships.DelegateOfNuageSubnet
+        target: ${nw_name}_l2domain
