@@ -79,7 +79,7 @@ public abstract class GenericController {
 
 			ArrayList<Map<String, String>> networkObjList = new ObjectMapper().readValue(requestObj.get("networks"), ArrayList.class);
 
-			Map<String, String> vnfObj = convertToMap(requestObj.get("vnf"));
+			ArrayList<Map<String, String>> vnfObjList =  new ObjectMapper().readValue(requestObj.get("vnf"), ArrayList.class);
 
 			Map<String, String> nuageObj = convertToMap(requestObj.get("nuage"));
 
@@ -97,20 +97,25 @@ public abstract class GenericController {
 			// prepare input param
 			// vnf
 			String vnfInput = "";
-			if ("huawei".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				String vnfm_h_name = vnfObj.get("vnfm_h_name");
-				String vnfm_h_id = vnfObj.get("vnfm_h_id");
-				String vnfm_h_vnfd_id_in_blueprint = vnfObj.get("vnfm_h_vnfd_id_in_blueprint");
-				String vnfm_h_plan_name = vnfObj.get("vnfm_h_plan_name");
-				String vnfm_h_vendor = vnfObj.get("vnfm_h_vendor");
-				String vnfm_h_vnfd_version = vnfObj.get("vnfm_h_vnfd_version");
-				vnfInput = TemplateUtil.generateInputVnfHuawei(vnfm_h_name, vnfm_h_id, vnfm_h_vnfd_id_in_blueprint, vnfm_h_plan_name, vnfm_h_vendor, vnfm_h_vnfd_version);
+			for (Map<String, String> vnf : vnfObjList) {
+				Map<String, String> vnfObj = convertToMap(vnf.get("value"));
+				
+				if ("huawei".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
+					String vnfm_h_name = vnfObj.get("vnfm_h_name");
+					String vnfm_h_id = vnfObj.get("vnfm_h_id");
+					String vnfm_h_vnfd_id_in_blueprint = vnfObj.get("vnfm_h_vnfd_id_in_blueprint");
+					String vnfm_h_plan_name = vnfObj.get("vnfm_h_plan_name");
+					String vnfm_h_vendor = vnfObj.get("vnfm_h_vendor");
+					String vnfm_h_vnfd_version = vnfObj.get("vnfm_h_vnfd_version");
+					vnfInput += TemplateUtil.generateInputVnfHuawei(vnfm_h_name, vnfm_h_id, vnfm_h_vnfd_id_in_blueprint, vnfm_h_plan_name, vnfm_h_vendor, vnfm_h_vnfd_version);
 
-			} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				throw new RuntimeException("zte not imple");
-			} else {
-				throw new RuntimeException("cbam not imple");
+				} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
+					throw new RuntimeException("zte not imple");
+				} else {
+					throw new RuntimeException("cbam not imple");
+				}
 			}
+			
 			// network
 			String networkInput = "";
 			for (Map<String, String> network : networkObjList) {
@@ -143,57 +148,70 @@ public abstract class GenericController {
 
 			// node_template
 			String node_template = "";
-			String connection_point = "";
-			String requirement = "";
-			String virtual_link = "";
-			String vnf_name = "";
-			if ("huawei".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				vnf_name = vnfObj.get("vnfm_h_name");
-
-				Set<String> keys = vnfObj.keySet();
-				Iterator<String> keyIterator = keys.iterator();
-				while (keyIterator.hasNext()) {
-					String key = keyIterator.next();
-					if (key.startsWith("connection_point_name_")) {
-						String uuid = StringUtils.split(key, "connection_point_name_")[1];
-						String cp_name = vnfObj.get("connection_point_name_" + uuid);
-						String nw_name = vnfObj.get("connection_point_mapping_" + uuid);
-
-						String nw_type = null;
-						for (Map<String, String> network : networkObjList) {
-							Map<String, String> networkData = convertToMap(network.get("value"));
-							String toFindNwName;
-							if ("external".equalsIgnoreCase(nw_type)) {
-								toFindNwName = networkData.get("nw_ext_name");
-							} else if ("internal".equalsIgnoreCase(nw_type)) {
-								toFindNwName = networkData.get("nw_int_name");
-							} else {
-								toFindNwName = networkData.get("nw_p_name");
-							}
-
-							if (StringUtils.equalsIgnoreCase(nw_name, toFindNwName)) {
-								nw_type = networkData.get("nw_type");
-								break;
-							}
-						}
-
-						connection_point += TemplateUtil.generateVnfHuaweiConnectinPoint(cp_name, nw_name, nw_type, getNetworkAttributeId());
-
-						requirement += TemplateUtil.generateVnfRequirementVL(cp_name, nw_name);
-
-						requirement += TemplateUtil.generateVnfRequirementSubnet(nw_name);
-					}
+			for (Map<String, String> vnf : vnfObjList) {
+				Map<String, String> vnfObj = convertToMap(vnf.get("value"));
+				
+				String connection_point = "";
+				String requirement = "";
+				
+				boolean foundRequirement = false;
+				
+				if (StringUtils.isNotBlank(vnfObj.get("vnf_depend"))) {
+					foundRequirement = true;
+					
+					requirement += TemplateUtil.generateVnfRequirementDepend(vnfObj.get("vnf_depend"));
 				}
+				
+				
+				if ("huawei".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
+					String vnf_name = vnfObj.get("vnfm_h_name");
 
-				placements.add(vnf_name + "_vnf");
+					Set<String> keys = vnfObj.keySet();
+					Iterator<String> keyIterator = keys.iterator();
+					while (keyIterator.hasNext()) {
+						String key = keyIterator.next();
+						if (key.startsWith("connection_point_name_")) {
+							foundRequirement = true;
+							String uuid = StringUtils.splitByWholeSeparator(key, "connection_point_name_")[0];
+							String cp_name = vnfObj.get("connection_point_name_" + uuid);
+							String nw_name = vnfObj.get("connection_point_mapping_" + uuid);
 
-			} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				throw new RuntimeException("zte not imple");
-			} else {
-				throw new RuntimeException("cbam not imple");
+							String nw_type = null;
+							for (Map<String, String> network : networkObjList) {
+								Map<String, String> networkData = convertToMap(network.get("value"));
+								String toFindNwName = networkData.get("nw_ext_name");
+								if (StringUtils.equalsIgnoreCase(nw_name, toFindNwName)) {
+									nw_type = networkData.get("nw_type");
+									break;
+								}
+							}
+
+							connection_point += TemplateUtil.generateVnfHuaweiConnectinPoint(cp_name, nw_name, nw_type, getNetworkAttributeId());
+
+							requirement += TemplateUtil.generateVnfRequirementVL(cp_name, nw_name);
+
+							requirement += TemplateUtil.generateVnfRequirementSubnet(nw_name);
+						}
+					}
+					
+					if (foundRequirement) {
+						requirement = "    requirements:\n" + requirement;
+					}
+
+					node_template += TemplateUtil.generateVnfHuawei(vnf_name, connection_point, requirement);
+
+					placements.add(vnf_name + "_vnf");
+					
+
+				} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
+					throw new RuntimeException("zte not imple");
+				} else {
+					throw new RuntimeException("cbam not imple");
+				}
 			}
 
 			// implementation_model
+			String virtual_link = "";
 			String implementation_model = generateBasicImplementationModel(nuageObj, placements);
 			for (Map<String, String> network : networkObjList) {
 				Map<String, String> networkData = convertToMap(network.get("value"));
@@ -217,15 +235,8 @@ public abstract class GenericController {
 				}
 			}
 
-			if ("huawei".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				node_template = TemplateUtil.generateVnfHuawei(vnf_name, connection_point, requirement, virtual_link);
-			} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-				throw new RuntimeException("zte not imple");
-			} else {
-				throw new RuntimeException("cbam not imple");
-			}
 
-			String mainYamlContent = TemplateUtil.generateYaml(input, node_template, implementation_model, placements.toString());
+			String mainYamlContent = TemplateUtil.generateYaml(input, node_template, virtual_link, implementation_model, placements.toString());
 
 			// make zip
 			File zipFile = File.createTempFile("ZIP", "1");

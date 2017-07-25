@@ -1,0 +1,3 @@
+      wait_for_${name}:
+        type: tosca.relationships.DependsOn
+        target: ${name}_vnf

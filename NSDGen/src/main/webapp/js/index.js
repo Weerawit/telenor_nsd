@@ -19,36 +19,39 @@ function downloadIt(type) {
 	var networks = $(formObj).serializeArray();
 
 	console.log("networks := " + JSON.stringify(networks));
-
-	var vnf;
-
+	
+	var formObj = $('#formVnfs');
+	var vnf = $(formObj).serializeArray();
+	
+	console.log("vnf := " + JSON.stringify(vnf));
+	
 	var nuage = undefined;
 	if ('nuage' == type) {
 		var formObj = $('#formNuage');
 		nuage = $(formObj).serializeArray();
 	}
 
-	if ($('div#vnfm_huawei').hasClass('active')) {
-		var formObj = $('#formVnfmHuawei');
-		vnf = $(formObj).serializeArray();
-		/*
-		 * vnf.push({ name : "vnf_type", value : "huawei" }); console.log("vnf := " +
-		 * JSON.stringify(vnf));
-		 */
-
-	} else if ($('div#vnfm_zte').hasClass('active')) {
-		var formObj = $('#formVnfmZte');
-		vnf = $(formObj).serializeArray();
-		/*
-		 * vnf.push({ name : "vnf_type", value : "zte" });
-		 */
-	} else {
-		var formObj = $('#formVnfmCbam');
-		vnf = $(formObj).serializeArray();
-		/*
-		 * vnf.push({ name : "vnf_type", value : "cbam" });
-		 */
-	}
+//	if ($('div#vnfm_huawei').hasClass('active')) {
+//		var formObj = $('#formVnfmHuawei');
+//		vnf = $(formObj).serializeArray();
+//		/*
+//		 * vnf.push({ name : "vnf_type", value : "huawei" }); console.log("vnf := " +
+//		 * JSON.stringify(vnf));
+//		 */
+//
+//	} else if ($('div#vnfm_zte').hasClass('active')) {
+//		var formObj = $('#formVnfmZte');
+//		vnf = $(formObj).serializeArray();
+//		/*
+//		 * vnf.push({ name : "vnf_type", value : "zte" });
+//		 */
+//	} else {
+//		var formObj = $('#formVnfmCbam');
+//		vnf = $(formObj).serializeArray();
+//		/*
+//		 * vnf.push({ name : "vnf_type", value : "cbam" });
+//		 */
+//	}
 
 	$.ajax({
 		type : "POST",
@@ -158,12 +161,12 @@ function notifyVnfChanged() {
 		vnf_depends_options += "<option value='" + value + "'>" + value + "</option>";
 	});
 
-	$("select[name='vnf_depend']").each(function() {
+	$("select[id='vnf_depend']").each(function() {
 		$(this).empty();
 		$(this).append(vnf_depends_options);
 	});
 
-	$("select[name='vnf_depend']").change(function() {
+	$("select[id='vnf_depend']").change(function() {
 		var selectObj = $(this);
 		var selectVal = selectObj.val();
 		// var vnf = $(this).closest("input[name='vnf']");
@@ -235,7 +238,7 @@ function saveVnf(formObj) {
 		$('#' + vnf_uuid).val(JSON.stringify(data));
 	} else {
 		//add
-		var vnf_select = "<select class='form-control' name='vnf_depend'>";
+		var vnf_select = "<select class='form-control' id='vnf_depend'>";
 		vnf_select += "</select>";
 		
 		var uuid = guid();
@@ -260,7 +263,7 @@ function viewVnf(uuid) {
 	
 	$('input[name="vnf_uuid"]').val(uuid);
 	
-	//$('button .btn-primary').innerlHTML = "Edit";
+	
 	
 	var type = undefined;
 	for (var i = 0; i < vnf.length; ++i) {
