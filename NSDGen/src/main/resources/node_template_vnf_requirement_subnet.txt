@@ -1,3 +1,3 @@
-      wait_for_${nw_name}_subnet:
+      wait_for_${cp_name}_${nw_name}_subnet:
         type: tosca.relationships.DependsOn
         target: ${nw_name}_subnet

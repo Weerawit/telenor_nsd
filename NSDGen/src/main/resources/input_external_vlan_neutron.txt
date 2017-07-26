@@ -5,5 +5,5 @@
       cidr: ${cidr}
       gateway: ${gateway}
       enable_dhcp: ${dhcp}
-      vlan: ${vlan}
+      vlan: "${vlan}"
       phys: ${phys}

@@ -33,18 +33,19 @@ public class TemplateUtil {
 	public static String generateMetadata(String name, String version, String description, String yaml) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("meta_name", StringUtils.isEmpty(name) ? "" : name);
-		model.put("meta_version", StringUtils.isEmpty(version) ? "" : "1.0");
+		model.put("meta_version", StringUtils.isEmpty(version) ? "1.0" : version);
 		model.put("meta_description", StringUtils.isEmpty(description) ? "" : description);
 		model.put("meta_main_yaml", yaml);
 		return _loadFromFile(model, "/metadata.txt");
 	}
 
-	public static String generateYaml(String input, String node_template, String implementation_model, String placement) throws IOException {
+	public static String generateYaml(String input, String node_template, String virtual_link, String implementation_model, String placement) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("input", input);
 		model.put("node_template", node_template);
 		model.put("implementation_model", implementation_model);
 		model.put("placement", placement);
+		model.put("virtual_link", virtual_link);
 		return _loadFromFile(model, "/main_yaml.txt");
 	}
 
@@ -105,12 +106,11 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/input_nuage.txt");
 	}
 
-	public static String generateVnfHuawei(String vnfName, String connection_point, String requirement, String virtual_link) throws IOException {
+	public static String generateVnfHuawei(String vnfName, String connection_point, String requirement) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("name", vnfName);
 		model.put("connection_point", connection_point);
 		model.put("requirement", requirement);
-		model.put("virtual_link", virtual_link);
 		return _loadFromFile(model, "/node_template_vnf_huawei.txt");
 	}
 
@@ -132,10 +132,17 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/node_template_vnf_requirement_vl.txt");
 	}
 
-	public static String generateVnfRequirementSubnet(String nw_name) throws IOException {
+	public static String generateVnfRequirementSubnet(String cp_name, String nw_name) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
+		model.put("cp_name", cp_name);
 		model.put("nw_name", nw_name);
 		return _loadFromFile(model, "/node_template_vnf_requirement_subnet.txt");
+	}
+	
+	public static String generateVnfRequirementDepend(String vnfName) throws IOException {
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("name", vnfName);
+		return _loadFromFile(model, "/node_template_vnf_requirement_depend.txt");
 	}
 
 	public static String generateVnfVL(String nw_name) throws IOException {
