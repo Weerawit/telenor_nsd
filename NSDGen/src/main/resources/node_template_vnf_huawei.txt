@@ -6,13 +6,8 @@
       version: { get_input: [ vnf_${name}, [ vnfd_version ] ] }
       descriptor_version: ""
       instantiation_parameters:
-        flavourId: default
-        grantlessMode: true
         vnfd_id_in_blueprint: { get_input: [ vnf_${name}, [ vnfd_id_in_blueprint ] ] }
         plan_name: { get_input: [ vnf_${name}, [ plan_name ] ] }
-        zones:
-          - id: zoneInfoId
-            resourceId: nova
         extVirtualLinks:
 ${connection_point}
 

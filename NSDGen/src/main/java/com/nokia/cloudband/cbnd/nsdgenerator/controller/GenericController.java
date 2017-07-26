@@ -190,7 +190,7 @@ public abstract class GenericController {
 
 							requirement += TemplateUtil.generateVnfRequirementVL(cp_name, nw_name);
 
-							requirement += TemplateUtil.generateVnfRequirementSubnet(nw_name);
+							requirement += TemplateUtil.generateVnfRequirementSubnet(cp_name, nw_name);
 						}
 					}
 					

@@ -33,7 +33,7 @@ public class TemplateUtil {
 	public static String generateMetadata(String name, String version, String description, String yaml) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("meta_name", StringUtils.isEmpty(name) ? "" : name);
-		model.put("meta_version", StringUtils.isEmpty(version) ? "" : "1.0");
+		model.put("meta_version", StringUtils.isEmpty(version) ? "1.0" : version);
 		model.put("meta_description", StringUtils.isEmpty(description) ? "" : description);
 		model.put("meta_main_yaml", yaml);
 		return _loadFromFile(model, "/metadata.txt");
@@ -132,8 +132,9 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/node_template_vnf_requirement_vl.txt");
 	}
 
-	public static String generateVnfRequirementSubnet(String nw_name) throws IOException {
+	public static String generateVnfRequirementSubnet(String cp_name, String nw_name) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
+		model.put("cp_name", cp_name);
 		model.put("nw_name", nw_name);
 		return _loadFromFile(model, "/node_template_vnf_requirement_subnet.txt");
 	}
