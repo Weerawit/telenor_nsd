@@ -6,3 +6,4 @@
       plan_name: ${plan_name}
       vendor: ${vendor}
       vnfd_version: "${vnfd_version}"
+      input_variables: ${input_variables}

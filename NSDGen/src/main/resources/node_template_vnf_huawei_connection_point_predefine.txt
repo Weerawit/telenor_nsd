@@ -1,4 +1,4 @@
           - extCps:
             - cpdId: ${cp_name}
-            resourceId: { get_input: [ network_${nw_name}, [ uuid ] ] }
+            resourceId: { get_attribute: [ ${nw_name}_net_attr, outputs, [ external_id ] ]  }
             name:  { get_input: [ network_${nw_name}, [ name ] ] }

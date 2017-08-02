@@ -49,7 +49,7 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/main_yaml.txt");
 	}
 
-	public static String generateInputVnfHuawei(String name, String id, String vnfd_id_in_blueprint, String plan_name, String vendor, String vnfd_version) throws IOException {
+	public static String generateInputVnfHuawei(String name, String id, String vnfd_id_in_blueprint, String plan_name, String vendor, String vnfd_version, String input_variables) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("name", name);
 		model.put("id", StringUtils.isEmpty(id) ? NEED_VALUE : id);
@@ -57,6 +57,7 @@ public class TemplateUtil {
 		model.put("plan_name", StringUtils.isEmpty(plan_name) ? NEED_VALUE : plan_name);
 		model.put("vendor", StringUtils.isEmpty(vendor) ? "HUAWEI" : vendor);
 		model.put("vnfd_version", StringUtils.isEmpty(vnfd_version) ? NEED_VALUE : vnfd_version);
+		model.put("input_variables", StringUtils.isEmpty(input_variables) ? "[]" : input_variables.trim());
 		return _loadFromFile(model, "/input_vnf_huawei.txt");
 	}
 
@@ -78,10 +79,10 @@ public class TemplateUtil {
 
 	}
 
-	public static String generateInputPredefineNetwork(String name, String uuid) throws IOException {
+	public static String generateInputPredefineNetwork(String name, String nw_p_nsname) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("name", name);
-		model.put("uuid", StringUtils.isEmpty(uuid) ? NEED_VALUE : uuid);
+		model.put("nw_p_nsname", StringUtils.isEmpty(nw_p_nsname) ? NEED_VALUE : nw_p_nsname);
 		return _loadFromFile(model, "/input_predefine_network.txt");
 	}
 
@@ -132,10 +133,14 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/node_template_vnf_requirement_vl.txt");
 	}
 
-	public static String generateVnfRequirementSubnet(String cp_name, String nw_name) throws IOException {
+	public static String generateVnfRequirementSubnet(String cp_name, String nw_name, String nw_type) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("cp_name", cp_name);
 		model.put("nw_name", nw_name);
+		
+		if ("predefine".equalsIgnoreCase(nw_type)) {
+			return _loadFromFile(model, "/node_template_vnf_requirement_predefine.txt");
+		}
 		return _loadFromFile(model, "/node_template_vnf_requirement_subnet.txt");
 	}
 	
@@ -149,6 +154,13 @@ public class TemplateUtil {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("nw_name", nw_name);
 		return _loadFromFile(model, "/node_template_vnf_vl.txt");
+	}
+	
+	public static String generateImplModelPredefineNetwork(String nw_name, String cbnd_name) throws IOException {
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("nw_name", nw_name);
+		model.put("cbnd_name", cbnd_name);
+		return _loadFromFile(model, "/implementation_model_network_predefine.txt");
 	}
 
 	public static String generateImplModelNuetronExternalNetwork(String nw_name, String type) throws IOException {

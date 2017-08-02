@@ -1,0 +1,12 @@
+  ${nw_name}_net:
+    type: tosca.node.telenor.NetworkService
+    properties:
+      name: { get_input: [network_${nw_name}, [cbnd_name] ] }
+  ${nw_name}_net_attr:
+    type: tosca.node.telenor.NSOutputs
+    properties:
+      ns_id: { get_attribute: [ ${nw_name}_net, ns_id ] }
+    requirements:
+      depends_on_network_service:
+        type: tosca.relationships.DependsOn
+        target: ${nw_name}_net

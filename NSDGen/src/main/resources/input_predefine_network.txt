@@ -1,5 +1,5 @@
   network_${name}:
     type: json
     default:
-      uuid: ${uuid}
       name: ${name}
+      cbnd_name: ${nw_p_nsname}
