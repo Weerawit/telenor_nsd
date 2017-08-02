@@ -111,7 +111,15 @@ public abstract class GenericController {
 					vnfInput += TemplateUtil.generateInputVnfHuawei(vnfm_h_name, vnfm_h_id, vnfm_h_vnfd_id_in_blueprint, vnfm_h_plan_name, vnfm_h_vendor, vnfm_h_vnfd_version, vnfm_h_input_variables);
 
 				} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-					throw new RuntimeException("zte not imple");
+					String vnfm_z_name = vnfObj.get("vnfm_z_name");
+					String vnfm_z_id = vnfObj.get("vnfm_z_id");
+					String vnfm_z_azone = vnfObj.get("vnfm_z_azone");
+					String vnfm_z_vnf_name = vnfObj.get("vnfm_z_vnf_name");
+					String vnfm_z_vim_name = vnfObj.get("vnfm_z_vim_name");
+					String vnfm_z_vendor = vnfObj.get("vnfm_z_vendor");
+					String vnfm_z_vnfd_version = vnfObj.get("vnfm_z_vnfd_version");
+					String vnfm_z_ip_plan = vnfObj.get("vnfm_z_ip_plan");
+					vnfInput += TemplateUtil.generateInputVnfZte(vnfm_z_name, vnfm_z_id, vnfm_z_vendor, vnfm_z_vnfd_version, vnfm_z_azone, vnfm_z_vnf_name, vnfm_z_vim_name, vnfm_z_ip_plan);
 				} else {
 					throw new RuntimeException("cbam not imple");
 				}
@@ -213,7 +221,53 @@ public abstract class GenericController {
 					
 
 				} else if ("zte".equalsIgnoreCase(vnfObj.get("vnf_type"))) {
-					throw new RuntimeException("zte not imple");
+
+					String vnf_name = vnfObj.get("vnfm_z_name");
+
+					Set<String> keys = vnfObj.keySet();
+					Iterator<String> keyIterator = keys.iterator();
+					while (keyIterator.hasNext()) {
+						String key = keyIterator.next();
+						if (key.startsWith("connection_point_name_")) {
+							foundRequirement = true;
+							String uuid = StringUtils.splitByWholeSeparator(key, "connection_point_name_")[0];
+							String cp_name = vnfObj.get("connection_point_name_" + uuid);
+							String nw_name = vnfObj.get("connection_point_mapping_" + uuid);
+
+							String nw_type = null;
+							for (Map<String, String> network : networkObjList) {
+								Map<String, String> networkData = convertToMap(network.get("value"));
+								String toFindNwType = networkData.get("nw_type");
+								String toFindNwName = null;
+								if ("predefine".equals(toFindNwType)) {
+									toFindNwName = networkData.get("nw_p_name");
+								} else if ("external".equals(toFindNwType)) {
+									toFindNwName = networkData.get("nw_ext_name");
+								} else {
+									toFindNwName = networkData.get("nw_int_name");
+								}
+								if (StringUtils.equalsIgnoreCase(nw_name, toFindNwName)) {
+									nw_type = toFindNwType;
+									break;
+								}
+							}
+
+							connection_point += TemplateUtil.generateVnfZteConnectinPoint(cp_name, nw_name, nw_type, getNetworkAttributeId());
+
+							requirement += TemplateUtil.generateVnfRequirementVL(cp_name, nw_name);
+
+							requirement += TemplateUtil.generateVnfRequirementSubnet(cp_name, nw_name, nw_type);
+						}
+					}
+					
+					if (foundRequirement) {
+						requirement = "    requirements:\n" + requirement;
+					}
+
+					node_template += TemplateUtil.generateVnfZte(vnf_name, connection_point, requirement);
+
+					placements.add(vnf_name + "_vnf");
+					
 				} else {
 					throw new RuntimeException("cbam not imple");
 				}

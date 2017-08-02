@@ -1,0 +1,17 @@
+  ${name}_vnf:
+    type: tosca.nodes.nfv.VNF
+    properties:
+      id: { get_input: [ vnf_${name}, [ id ] ] }
+      vendor: { get_input: [ vnf_${name}, [ vendor ] ] }
+      version: { get_input: [ vnf_${name}, [ vnfd_version ] ] }
+      descriptor_version: ""
+      instantiation_parameters:
+        AZone: { get_input: [ vnf_${name}, [ AZone ] ] }
+        vnf_name: { get_input: [ vnf_${name}, [ vnf_name ] ] }
+        vim_name: { get_input: [ vnf_${name}, [ vim_name ] ] }
+        ip_plan: { get_input: [ vnf_${name}, [ ip_plan ] ] }      
+        
+        extVirtualLinks:
+${connection_point}
+
+${requirement}

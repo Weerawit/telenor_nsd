@@ -305,33 +305,46 @@
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="vnfm_z_vimid" class="col-sm-4 col-form-label">vimid</label>
+										<label for="vnfm_z_vendor" class="col-sm-4 col-form-label">vendor</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="" id="vnfm_z_vimid" name="vnfm_z_vimid">
+											<input class="form-control" type="text" value="ZTE" id="vnfm_z_vendor" name="vnfm_z_vendor">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="vnfm_z_vnfminstid" class="col-sm-4 col-form-label">vnfminstid</label>
+										<label for="vnfm_z_vnfd_version" class="col-sm-4 col-form-label">vnfd_version</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="" id="vnfm_z_vnfminstid" name="vnfm_z_vnfminstid">
+											<input class="form-control" type="text" value="1.0" id="vnfm_z_vnfd_version" name="vnfm_z_vnfd_version">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="example-text-input" class="col-sm-4 col-form-label">vendor</label>
+										<label for="vnfm_z_vnf_name" class="col-sm-4 col-form-label">vnf_name</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="ZTE" id="vendor">
+											<input class="form-control" type="text" value="" id="vnfm_z_vnf_name" name="vnfm_z_vnf_name">
 										</div>
 									</div>
 									<div class="form-group row">
-										<label for="example-text-input" class="col-sm-4 col-form-label">vnfd_version</label>
+										<label for="vnfm_z_vim_name" class="col-sm-4 col-form-label">vim_name</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" value="1.0" id="vnfd_version">
+											<input class="form-control" type="text" value="" id="vnfm_z_vim_name" name="vnfm_z_vim_name">
 										</div>
 									</div>
+									<div class="form-group row">
+										<label for="vnfm_z_azone" class="col-sm-4 col-form-label">AZone</label>
+										<div class="col-sm-8">
+											<input class="form-control" type="text" value="" id="vnfm_z_azone" name="vnfm_z_azone">
+										</div>
+									</div>
+									<div class="form-group row">
+										<label for="vnfm_z_ip_plan" class="col-sm-4 col-form-label">ip_plan</label>
+										<div class="col-sm-8">
+											<textarea class="form-control" id="vnfm_z_ip_plan" name="vnfm_z_ip_plan">{"ZTE_xGW_41_EMS_NET_virtualLink.startip": "172.41.83.68","ZTE_xGW_41_EMS_NET_virtualLink.endip": "172.41.83.71"}</textarea>
+										</div>
+									</div>
+									
 									<div class="form-group row">
 										<label for="example-text-input" class="col-sm-4 col-form-label"></label>
 										<div class="col-sm-8">
-											<table class="table-sm col-sm-12 table-striped">
+											<table class="table-sm col-sm-12 table-striped" id="tableVnfmZte">
 												<thead class="thead-inverse">
 													<tr>
 														<th>Connection Point</th>
@@ -341,6 +354,12 @@
 												<tbody>
 												</tbody>
 											</table>
+										</div>
+									</div>
+									<div class="form-group row text-right">
+										<div class="col">
+											<button type="button" class="btn btn-primary" onclick="saveVnf($('#formVnfmZte'))">Save</button>
+											<button type="button" class="btn btn-secondary" onclick="resetVnf($('#formVnfmZte'))">Cancel</button>
 										</div>
 									</div>
 								</form>

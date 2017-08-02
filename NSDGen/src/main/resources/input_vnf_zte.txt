@@ -1,0 +1,8 @@
+  vnf_${name}:
+    type: json
+    default:
+      id: ${id}
+      AZone: ${AZone}
+      vnf_name: ${vnf_name}
+      vim_name: ${vim_name}
+      ip_plan: ${ip_plan}

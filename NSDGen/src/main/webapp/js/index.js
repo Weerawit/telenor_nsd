@@ -299,6 +299,27 @@ function viewVnf(uuid) {
 		
 	} else if (type == 'zte') {
 		$('#vnf a[href="#vnfm_zte"]').tab('show');
+		resetVnf($('#formVnfmZte'));
+		$('#vnfm_z_name').attr('readonly', 'readonly');
+		for (var i = 0; i < vnf.length; ++i) {
+			var name = vnf[i]['name'];
+			var value = vnf[i]['value'];
+			
+			if (name.startsWith("connection_point_name_")) {
+				var uuid = name.split('connection_point_name_')[1];
+				addConnectionPoint($('#tableVnfmZte'), uuid);
+				
+				$('#connection_point_name_' + uuid).val(value);
+				
+				for (var j = 0; j < vnf.length; ++j) {
+					if (vnf[j]['name'] == 'connection_point_mapping_' + uuid) {
+						$('#connection_point_mapping_' + uuid).val(vnf[j]['value']);
+					}
+				}
+			} else {
+				$('#' + name).val(value);
+			}
+		}
 	} else {
 		$('#vnf a[href="#vnfm_cbam"]').tab('show');
 	}

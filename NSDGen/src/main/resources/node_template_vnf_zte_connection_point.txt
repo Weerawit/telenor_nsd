@@ -1,0 +1,7 @@
+          - extCps:
+            - cpdId: ${cp_name}
+            key_name: ${cp_name}
+            resourceId: { get_attribute: [ ${nw_name}_net, ${attribute_id} ]  }
+            vl_instance_id: { get_attribute: [ ${nw_name}_net, ${attribute_id} ] }
+            network_name:  { get_input: [ network_${nw_name}, [ name ] ] }
+            subnetwork_name: { concat: [ [ { get_input: [ network_${nw_name}, [ name ] ] }, "subnet"], "_"] }

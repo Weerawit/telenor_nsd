@@ -60,6 +60,19 @@ public class TemplateUtil {
 		model.put("input_variables", StringUtils.isEmpty(input_variables) ? "[]" : input_variables.trim());
 		return _loadFromFile(model, "/input_vnf_huawei.txt");
 	}
+	
+	public static String generateInputVnfZte(String name, String id, String vendor, String vnfd_version, String AZone, String vnf_name, String vim_name, String ip_plan) throws IOException {
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("name", name);
+		model.put("id", StringUtils.isEmpty(id) ? NEED_VALUE : id);
+		model.put("AZone", StringUtils.isEmpty(AZone) ? NEED_VALUE : AZone);
+		model.put("vnf_name", StringUtils.isEmpty(vnf_name) ? NEED_VALUE : vnf_name);
+		model.put("vim_name", StringUtils.isEmpty(vim_name) ? NEED_VALUE : vim_name);
+		model.put("vendor", StringUtils.isEmpty(vendor) ? "HUAWEI" : vendor);
+		model.put("vnfd_version", StringUtils.isEmpty(vnfd_version) ? NEED_VALUE : vnfd_version);
+		model.put("ip_plan", StringUtils.isEmpty(ip_plan) ? "{}" : ip_plan.trim());
+		return _loadFromFile(model, "/input_vnf_zte.txt");
+	}
 
 	public static String generateInputExternalNeutron(String name, String cidr, String gateway, String dhcp, String vlan, String phys, String type) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
@@ -114,6 +127,14 @@ public class TemplateUtil {
 		model.put("requirement", requirement);
 		return _loadFromFile(model, "/node_template_vnf_huawei.txt");
 	}
+	
+	public static String generateVnfZte(String vnfName, String connection_point, String requirement) throws IOException {
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("name", vnfName);
+		model.put("connection_point", connection_point);
+		model.put("requirement", requirement);
+		return _loadFromFile(model, "/node_template_vnf_zte.txt");
+	}
 
 	public static String generateVnfHuaweiConnectinPoint(String cp_name, String nw_name, String nw_type, String attribute_id) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
@@ -124,6 +145,17 @@ public class TemplateUtil {
 		}
 		model.put("attribute_id", attribute_id);
 		return _loadFromFile(model, "/node_template_vnf_huawei_connection_point.txt");
+	}
+	
+	public static String generateVnfZteConnectinPoint(String cp_name, String nw_name, String nw_type, String attribute_id) throws IOException {
+		Map<String, String> model = new HashMap<String, String>();
+		model.put("cp_name", cp_name);
+		model.put("nw_name", nw_name);
+		if ("predefine".equalsIgnoreCase(nw_type)) {
+			return _loadFromFile(model, "/node_template_vnf_zte_connection_point_predefine.txt");
+		}
+		model.put("attribute_id", attribute_id);
+		return _loadFromFile(model, "/node_template_vnf_zte_connection_point.txt");
 	}
 
 	public static String generateVnfRequirementVL(String cp_name, String nw_name) throws IOException {
