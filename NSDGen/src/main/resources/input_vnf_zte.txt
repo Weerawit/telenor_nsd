@@ -2,7 +2,10 @@
     type: json
     default:
       id: ${id}
-      AZone: ${AZone}
+      vendor: ${vendor}
+      vnfd_version: "${vnfd_version}"
       vnf_name: ${vnf_name}
       vim_name: ${vim_name}
+      AZone: ${AZone}
       ip_plan: ${ip_plan}
+      

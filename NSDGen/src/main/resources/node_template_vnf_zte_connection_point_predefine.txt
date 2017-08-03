@@ -4,4 +4,4 @@
             resourceId: { get_attribute: [ ${nw_name}_net_attr, outputs, [ external_id ] ]  }
             vl_instance_id: { get_attribute: [ ${nw_name}_net_attr, outputs, [ external_id ] ] }
             network_name:  { get_input: [ network_${nw_name}, [ name ] ] }
-            subnetwork_name: { concat: [ [ { get_input: [ network_${nw_name}, [ name ] ] }, "subnet"], "_"] }
+            subnetwork_name: { get_attribute: [ ${nw_name}_net_attr, outputs, [ subnet_name ] ] }
