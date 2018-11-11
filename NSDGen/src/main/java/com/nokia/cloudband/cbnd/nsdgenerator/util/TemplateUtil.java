@@ -92,10 +92,9 @@ public class TemplateUtil {
 
 	}
 
-	public static String generateInputPredefineNetwork(String name, String nw_p_nsname) throws IOException {
+	public static String generateInputPredefineNetwork(String name) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("name", name);
-		model.put("nw_p_nsname", StringUtils.isEmpty(nw_p_nsname) ? NEED_VALUE : nw_p_nsname);
 		return _loadFromFile(model, "/input_predefine_network.txt");
 	}
 
@@ -188,10 +187,9 @@ public class TemplateUtil {
 		return _loadFromFile(model, "/node_template_vnf_vl.txt");
 	}
 	
-	public static String generateImplModelPredefineNetwork(String nw_name, String cbnd_name) throws IOException {
+	public static String generateImplModelPredefineNetwork(String nw_name) throws IOException {
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("nw_name", nw_name);
-		model.put("cbnd_name", cbnd_name);
 		return _loadFromFile(model, "/implementation_model_network_predefine.txt");
 	}
 

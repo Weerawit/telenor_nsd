@@ -2,4 +2,3 @@
     type: json
     default:
       name: ${name}
-      cbnd_name: ${nw_p_nsname}

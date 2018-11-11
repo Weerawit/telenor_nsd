@@ -144,9 +144,8 @@ public abstract class GenericController {
 				} else {
 					// predefine
 					String nw_p_name = networkData.get("nw_p_name");
-					String nw_p_nsname = networkData.get("nw_p_nsname");
 
-					networkInput += TemplateUtil.generateInputPredefineNetwork(nw_p_name, nw_p_nsname);
+					networkInput += TemplateUtil.generateInputPredefineNetwork(nw_p_name);
 
 				}
 			}
@@ -295,9 +294,8 @@ public abstract class GenericController {
 
 				} else {
 					String nw_p_name = networkData.get("nw_p_name");
-					String nw_p_nsname = networkData.get("nw_p_nsname");
 
-					implementation_model += TemplateUtil.generateImplModelPredefineNetwork(nw_p_name, nw_p_nsname);
+					implementation_model += TemplateUtil.generateImplModelPredefineNetwork(nw_p_name);
 
 					virtual_link += TemplateUtil.generateVnfVL(nw_p_name);
 				}

@@ -1,7 +1,7 @@
   ${nw_name}_net:
     type: tosca.node.telenor.NetworkService
     properties:
-      name: { get_input: [network_${nw_name}, [cbnd_name] ] }
+      name: { get_input: [network_${nw_name}, [nw_name] ] }
   ${nw_name}_net_attr:
     type: tosca.node.telenor.NSOutputs
     properties:

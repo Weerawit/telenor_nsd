@@ -3,5 +3,5 @@
             key_name: ${cp_name}
             resourceId: { get_attribute: [ ${nw_name}_net_attr, outputs, [ external_id ] ]  }
             vl_instance_id: { get_attribute: [ ${nw_name}_net_attr, outputs, [ external_id ] ] }
-            network_name:  { get_input: [ network_${nw_name}, [ name ] ] }
+            network_name:  { get_attribute: [ ${nw_name}_net_attr, outputs, [ network_name ] ] }
             subnetwork_name: { get_attribute: [ ${nw_name}_net_attr, outputs, [ subnet_name ] ] }
